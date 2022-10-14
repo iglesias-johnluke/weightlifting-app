@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/content"
@@ -17,7 +18,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/bottom_nav_bar"
-        app:menu="@menu/bottom_navigation_menu">
+        app:menu="@menu/bottom_navigation_menu"
+        android:layout_alignParentBottom="true"
+        >
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </LinearLayout>

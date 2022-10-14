@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         val dataFragment = DataFragment()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.content, dataFragment, "")
+        fragmentTransaction.commit()
 
 
 
