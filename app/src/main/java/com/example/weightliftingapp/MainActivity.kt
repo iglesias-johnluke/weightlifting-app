@@ -10,12 +10,23 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import androidx.fragment.app.Fragment
 import com.example.weightliftingapp.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+
+    private lateinit var activeFragment : Fragment
+    private val dataFragment = DataFragment()
+    private val logFragment = LogFragment()
+    private val browseWorkoutFragment = BrowseWorkoutFragment()
+    private val fragmentManager = supportFragmentManager
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,15 +34,41 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //open data fragment upon opening app
-        val dataFragment = DataFragment()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.content, dataFragment, "")
-        fragmentTransaction.commit()
+        setFragments()
 
 
+    }
 
+    //initializes nav bar and fragment views
+    fun setFragments(){
+        //add all fragments to main container, hide all fragments except dataFragment
+        activeFragment = dataFragment
+        fragmentManager.beginTransaction().add(R.id.main_container, logFragment, "logFragment")
+            .hide(logFragment).commit()
+        fragmentManager.beginTransaction()
+            .add(R.id.main_container, browseWorkoutFragment, "browseWorkoutFragment")
+            .hide(browseWorkoutFragment).commit()
+        fragmentManager.beginTransaction()
+            .add(R.id.main_container, dataFragment, "dataFragment")
+            .commit()
 
+        binding.bottomNavBar.setOnNavigationItemSelectedListener{ item ->
+            when (item.itemId) {
+                R.id.data_page -> {
+                    fragmentManager.beginTransaction().hide(activeFragment).show(dataFragment).commit()
+                    activeFragment = dataFragment
+                }
+                R.id.log_page -> {
+                    fragmentManager.beginTransaction().hide(activeFragment).show(logFragment).commit()
+                    activeFragment = logFragment
+                }
+                R.id.browse_page -> {
+                    fragmentManager.beginTransaction().hide(activeFragment).show(browseWorkoutFragment).commit()
+                    activeFragment = browseWorkoutFragment
+                }
+            }
+            true
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -40,35 +77,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.data_page -> {
-                val dataFragment = DataFragment()
-                val fragmentTransaction = supportFragmentManager.beginTransaction()
-                fragmentTransaction.replace(R.id.content, dataFragment, "")
-                fragmentTransaction.commit()
-                true
-            }
-            R.id.browse_page -> {
-                val browseFragment = BrowseWorkoutFragment()
-                val fragmentTransaction = supportFragmentManager.beginTransaction()
-                fragmentTransaction.replace(R.id.content, browseFragment, "")
-                fragmentTransaction.commit()
-                true
-            }
-            R.id.log_page -> {
-                val logFragment = LogFragment()
-                val fragmentTransaction = supportFragmentManager.beginTransaction()
-                fragmentTransaction.replace(R.id.content, logFragment, "")
-                fragmentTransaction.commit()
-                true
-            }
-            else -> false
-        }
-    }
+
 
 
 }

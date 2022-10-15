@@ -7,11 +7,11 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/content"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"></FrameLayout>
+    <include
+        layout="@layout/content_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+         />
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
