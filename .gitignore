@@ -1,4 +1,3 @@
-.idea
 
 *.iml
 .gradle
@@ -16,4 +15,5 @@
 .cxx
 local.properties
 *.xml
+.idea/workspace.xml
 .idea/workspace.xml
