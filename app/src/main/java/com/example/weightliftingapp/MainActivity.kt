@@ -15,6 +15,7 @@ import com.example.weightliftingapp.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //initializes nav bar and fragment views
-    fun setFragments(){
+    private fun setFragments(){
         //add all fragments to main container, hide all fragments except dataFragment
         activeFragment = dataFragment
         fragmentManager.beginTransaction().add(R.id.main_container, logFragment, "logFragment")
@@ -57,14 +58,17 @@ class MainActivity : AppCompatActivity() {
                 R.id.data_page -> {
                     fragmentManager.beginTransaction().hide(activeFragment).show(dataFragment).commit()
                     activeFragment = dataFragment
+                    binding.appBarLayoutText.text = getString(R.string.data_icon)
                 }
                 R.id.log_page -> {
                     fragmentManager.beginTransaction().hide(activeFragment).show(logFragment).commit()
                     activeFragment = logFragment
+                    binding.appBarLayoutText.text = getString(R.string.log_icon)
                 }
                 R.id.browse_page -> {
                     fragmentManager.beginTransaction().hide(activeFragment).show(browseWorkoutFragment).commit()
                     activeFragment = browseWorkoutFragment
+                    binding.appBarLayoutText.text = getString(R.string.browse_icon)
                 }
             }
             true
