@@ -13,6 +13,7 @@
     <string name="data_icon">Your Data</string>
     <string name="log_icon">Log</string>
     <string name="browse_icon">Browse Workouts</string>
+    <string name="login_action_bar">Login</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
