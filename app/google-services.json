@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "787575212546",
+    "project_id": "cmsc436-project-eb978",
+    "storage_bucket": "cmsc436-project-eb978.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787575212546:android:c2749f292176b626afb51b",
+        "android_client_info": {
+          "package_name": "com.example.weightliftingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "787575212546-u4p1j74pjl28qrm8uehb2uhu9ir66cua.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAte2TlaBVuErHXNPHThzRfzcvkt0A4plM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "787575212546-u4p1j74pjl28qrm8uehb2uhu9ir66cua.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
