@@ -58,6 +58,16 @@ class MainActivity : AppCompatActivity() {
 
         createSignInIntent()
 
+        /*user signs out, which closes main activity, relaunches sign-in activity*/
+        binding.signoutButton.setOnClickListener{
+            AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener {
+                    createSignInIntent()
+                    finish()
+                }
+        }
+
 
 
     }
