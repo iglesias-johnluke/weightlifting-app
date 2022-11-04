@@ -24,8 +24,8 @@ import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.firebase.ui.auth.util.ExtraConstants
 import com.google.firebase.auth.ActionCodeSettings
-
-
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 
 class MainActivity : AppCompatActivity() {
@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private val browseWorkoutFragment = BrowseWorkoutFragment()
     private val fragmentManager = supportFragmentManager
     val FIREBASE = "firebase-log"
+    private lateinit var auth: FirebaseAuth
 
     // See: https://developer.android.com/training/basics/intents/result
     private val signInLauncher = registerForActivityResult(
@@ -55,8 +56,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setFragments()
-
-        createSignInIntent()
+        // Initialize Firebase Auth
+        auth = Firebase.auth
 
         /*user signs out, which closes main activity, relaunches sign-in activity*/
         binding.signoutButton.setOnClickListener{
@@ -72,6 +73,16 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    public override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
+        if(currentUser == null){ //if user not logged in, show sign-in activity
+            createSignInIntent()
+        }
+    }
+
+    /** launches sign-in activity */
     private fun createSignInIntent(){
         // Choose authentication providers
         val providers = arrayListOf(
@@ -84,6 +95,7 @@ class MainActivity : AppCompatActivity() {
             .build()
         signInLauncher.launch(signInIntent)
     }
+
 
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         val response = result.idpResponse
