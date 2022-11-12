@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity() {
                 .signOut(this)
                 .addOnCompleteListener {
                     createSignInIntent()
+
                     finish()
                 }
         }
@@ -92,6 +93,7 @@ class MainActivity : AppCompatActivity() {
         val signInIntent = AuthUI.getInstance()
             .createSignInIntentBuilder()
             .setAvailableProviders(providers)
+            .setIsSmartLockEnabled(false)
             .build()
         signInLauncher.launch(signInIntent)
     }
