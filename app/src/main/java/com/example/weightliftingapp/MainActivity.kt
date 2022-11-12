@@ -1,6 +1,7 @@
 package com.example.weightliftingapp
 
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,8 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import android.view.TextureView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.weightliftingapp.databinding.ActivityMainBinding
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
@@ -23,8 +26,15 @@ import com.firebase.ui.auth.AuthUI.IdpConfig
 import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.firebase.ui.auth.util.ExtraConstants
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 
@@ -40,12 +50,69 @@ class MainActivity : AppCompatActivity() {
     private val fragmentManager = supportFragmentManager
     val FIREBASE = "firebase-log"
     private lateinit var auth: FirebaseAuth
+    private var databaseManager : DatabaseManager = DatabaseManager()
+
 
     // See: https://developer.android.com/training/basics/intents/result
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
     ) { res ->
         this.onSignInResult(res)
+    }
+
+    /**class for managing reading and writing to user data object within firebase database*/
+    class DatabaseManager {
+        val database = Firebase.database.getReference("users")
+        lateinit var userData : Task<DataSnapshot>
+        lateinit var userID : String
+
+        /**returns true if user is in db, false ow*/
+        fun userExists(uid:String) : Boolean{
+            var output = false
+            try{
+
+                database.child(uid).get().addOnSuccessListener {
+                    val dataSnapshot= it
+                    Log.d("database", dataSnapshot.value.toString())
+
+                }
+                output = true
+                userData =  database.child(uid).get()
+                userID = uid
+
+            }catch (e:java.lang.Error){
+                output = false
+                Log.d("database", "USER DOES NOT EXIST")
+            }
+            return output
+        }
+
+
+        /**if user object does not exist, initializes new user object within database*/
+        fun addUser(userID:String){
+
+
+        }
+
+        /**listens for changes of userdata and updates UI*/
+        fun setDataListener(textView:TextView){
+            val postListener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    // Get Post object and use the values to update the UI
+                    val post = dataSnapshot.getValue<String>()
+                    // ...
+                    textView.text = post
+
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Getting Post failed, log a message
+                }
+            }
+            database.child(userID).addValueEventListener(postListener)
+        }
+
+
     }
 
 
@@ -56,6 +123,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setFragments()
+
         // Initialize Firebase Auth
         auth = Firebase.auth
 
@@ -69,6 +137,7 @@ class MainActivity : AppCompatActivity() {
                     finish()
                 }
         }
+
 
 
 
@@ -104,8 +173,16 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
-            // ...
+
+            if(databaseManager.userExists(user!!.uid)){
+                databaseManager.setDataListener(binding.appBarLayoutText)
+            }else{
+               binding.appBarLayoutText.text=  "not exists"
+            }
+
+
             Log.d(FIREBASE, "SIGNED IN")
+
 
         } else {
             // Sign in failed. If response is null the user canceled the
