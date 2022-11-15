@@ -1,6 +1,6 @@
 package com.example.weightliftingapp
 
-class Exercise(name: String, sets: Int, reps: Int, weight: Int, muscleGroup: MuscleGroup) {
+class Exercise(name: String? = null, sets: Int? = null, reps: Int? = null, weight: Int? = null, muscleGroup: MuscleGroup? = null) {
 
     private var name  = name
     private var sets = sets
@@ -10,32 +10,32 @@ class Exercise(name: String, sets: Int, reps: Int, weight: Int, muscleGroup: Mus
 
 
     fun getName():String{
-        return name
+        return name!!
     }
     fun setName(newName:String){
         name = newName
     }
     fun getSets():Int{
-        return sets
+        return sets!!
     }
     fun setSets(numSets:Int){
         sets = numSets
 
     }
     fun getReps():Int{
-        return reps
+        return reps!!
     }
     fun setReps(numReps:Int){
         reps = numReps
     }
     fun getWeight():Int{
-        return weight
+        return weight!!
     }
     fun setWeight(numLbs:Int){
         weight = numLbs
 
     }
-    fun getMuscleGroup():MuscleGroup{
+    fun getMuscleGroup(): MuscleGroup? {
         return muscleGroup
     }
     fun setMuscleGroup(newGroup:MuscleGroup){

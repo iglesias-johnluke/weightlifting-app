@@ -1,23 +1,14 @@
 package com.example.weightliftingapp
 
 import android.os.Bundle
-import android.provider.ContactsContract.Data
 import android.util.Log
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
-import android.view.MenuItem
-import android.view.TextureView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.weightliftingapp.databinding.ActivityMainBinding
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationBarView
 
 
 import com.google.firebase.auth.FirebaseAuth
@@ -25,13 +16,11 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.AuthUI.IdpConfig
 import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
-import com.firebase.ui.auth.util.ExtraConstants
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
@@ -66,8 +55,8 @@ class MainActivity : AppCompatActivity() {
         lateinit var userData : Task<DataSnapshot>
         lateinit var userID : String
 
-        /**returns true if user is in db, false ow*/
-        fun userExists(uid:String) : Boolean{
+        /**returns true if user key is mapped to a User object within firebase, false ow*/
+        fun isUserInitialized(uid:String) : Boolean{
             var output = false
             try{
 
@@ -174,7 +163,7 @@ class MainActivity : AppCompatActivity() {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
 
-            if(databaseManager.userExists(user!!.uid)){
+            if(databaseManager.isUserInitialized(user!!.uid)){
                 databaseManager.setDataListener(binding.appBarLayoutText)
             }else{
                binding.appBarLayoutText.text=  "not exists"

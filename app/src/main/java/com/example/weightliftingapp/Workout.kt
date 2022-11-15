@@ -3,13 +3,13 @@ import com.example.weightliftingapp.*
 import java.time.Duration
 import java.util.Date
 
-class Workout(name:String) {
+class Workout(name:String? = null) {
     var exercises = mutableListOf<Exercise>()
     private var name = name
     private lateinit var date : Date
     private lateinit var duration: Duration
 
-    fun getName():String{
+    fun getName(): String? {
         return name
     }
     fun setName(newName:String){
