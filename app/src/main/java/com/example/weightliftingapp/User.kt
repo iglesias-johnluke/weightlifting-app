@@ -1,10 +1,10 @@
 package com.example.weightliftingapp
 
-class User(id :Int? = null) {
+class User(id :String? = null) {
     private var id = id
     var workouts = mutableListOf<Workout>()
 
-    fun getId(): Int? {
+    fun getId(): String? {
         return id
     }
 

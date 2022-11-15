@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         /**returns true if user key is mapped to a User object within firebase, false ow*/
         fun isUserInitialized(uid:String) : Boolean{
+            userID = uid
             var isInitialized = false
             //get child for uid key within DB
             database.child(uid).get().addOnSuccessListener {
@@ -66,7 +67,6 @@ class MainActivity : AppCompatActivity() {
                     }
                     user =  dataSnapshot.value as User
                     isInitialized = true
-                    userID = uid
                     Log.d("database", user.toString())
                 }catch (e: java.lang.Error){//snapshot val is not type user
                     Log.d("database", "DATASNAPSHOT NOT TYPE USER")
@@ -80,10 +80,19 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        /**if user object does not exist, initializes new user object within database*/
-        fun addUserObjectToFirebase(userID:String){
+        /**sets user id key-value to value of user object within firebase |
+         * returns true if successful, false ow*/
+        fun addUserObjectToFirebase() : Boolean{
+            if(this::userID.isInitialized == false){
+                Log.d("database", "FAILED ADD USER")
+                return false
+            }
+            Log.d("database", "SUCCESS ADD USER")
+            val user = User(userID)
 
+            database.child(userID).setValue(user)
 
+            return true
         }
 
         /**listens for changes of userdata and updates UI*/
@@ -170,7 +179,7 @@ class MainActivity : AppCompatActivity() {
             if(isInitialized){
                 databaseManager.setDataListener(binding.appBarLayoutText)
             }else{
-               binding.appBarLayoutText.text=  "not exists"
+               databaseManager.addUserObjectToFirebase()
             }
 
 
