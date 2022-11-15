@@ -16,7 +16,6 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.AuthUI.IdpConfig
 import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -52,33 +51,37 @@ class MainActivity : AppCompatActivity() {
     /**class for managing reading and writing to user data object within firebase database*/
     class DatabaseManager {
         val database = Firebase.database.getReference("users")
-        lateinit var userData : Task<DataSnapshot>
+        lateinit var user : User
         lateinit var userID : String
 
         /**returns true if user key is mapped to a User object within firebase, false ow*/
         fun isUserInitialized(uid:String) : Boolean{
-            var output = false
-            try{
-
-                database.child(uid).get().addOnSuccessListener {
-                    val dataSnapshot= it
-                    Log.d("database", dataSnapshot.value.toString())
-
+            var isInitialized = false
+            //get child for uid key within DB
+            database.child(uid).get().addOnSuccessListener {
+                val dataSnapshot= it
+                try{//check snapshot val is of user type
+                    if(  !(dataSnapshot.value is User) ){
+                        throw java.lang.Error("DATASNAPSHOT NOT TYPE USER")
+                    }
+                    user =  dataSnapshot.value as User
+                    isInitialized = true
+                    userID = uid
+                    Log.d("database", user.toString())
+                }catch (e: java.lang.Error){//snapshot val is not type user
+                    Log.d("database", "DATASNAPSHOT NOT TYPE USER")
                 }
-                output = true
-                userData =  database.child(uid).get()
-                userID = uid
-
-            }catch (e:java.lang.Error){
-                output = false
-                Log.d("database", "USER DOES NOT EXIST")
+            }.addOnFailureListener{ //failed get child
+                Log.d("database", "FAILED GET CHILD")
             }
-            return output
+
+
+            return isInitialized
         }
 
 
         /**if user object does not exist, initializes new user object within database*/
-        fun addUser(userID:String){
+        fun addUserObjectToFirebase(userID:String){
 
 
         }
@@ -162,8 +165,9 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
+            val isInitialized = databaseManager.isUserInitialized(user!!.uid)
 
-            if(databaseManager.isUserInitialized(user!!.uid)){
+            if(isInitialized){
                 databaseManager.setDataListener(binding.appBarLayoutText)
             }else{
                binding.appBarLayoutText.text=  "not exists"
