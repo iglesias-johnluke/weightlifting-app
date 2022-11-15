@@ -1,5 +1,6 @@
 package com.example.weightliftingapp
 
+import MyAdapter
 import android.os.Bundle
 import android.util.Log
 import com.google.android.material.snackbar.Snackbar
@@ -10,7 +11,9 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.example.weightliftingapp.databinding.ActivityMainBinding
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -23,6 +26,7 @@ import com.firebase.ui.auth.AuthUI.IdpConfig
 import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.firebase.ui.auth.util.ExtraConstants
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -30,12 +34,17 @@ import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var tabLayout: TabLayout
+    lateinit var viewPager: ViewPager
+
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var activeFragment : Fragment
     private val dataFragment = DataFragment()
     private val logFragment = LogFragment()
+    private val newWorkoutsFragment = NewWorkouts()
+    private val pastWorkoutsFragment = PastWorkouts()
     private val browseWorkoutFragment = BrowseWorkoutFragment()
     private val fragmentManager = supportFragmentManager
     val FIREBASE = "firebase-log"
@@ -162,7 +171,7 @@ class MainActivity : AppCompatActivity() {
     //initializes nav bar and fragment views
     private fun setFragments(){
         //add all fragments to main container, hide all fragments except dataFragment
-        activeFragment = dataFragment
+        activeFragment = logFragment
         fragmentManager.beginTransaction().add(R.id.main_container, logFragment, "logFragment")
             .hide(logFragment).commit()
         fragmentManager.beginTransaction()
@@ -186,6 +195,24 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.browse_page -> {
                     fragmentManager.beginTransaction().hide(activeFragment).show(browseWorkoutFragment).commit()
+
+                    tabLayout = findViewById(R.id.tabLayout)
+                    viewPager = findViewById(R.id.viewPager)
+                    tabLayout.addTab(tabLayout.newTab().setText("Football"))
+                    tabLayout.addTab(tabLayout.newTab().setText("Cricket"))
+                    tabLayout.tabGravity = TabLayout.GRAVITY_FILL
+                    val adapter = MyAdapter(this, supportFragmentManager,
+                        tabLayout.tabCount)
+                    viewPager.adapter = adapter
+                    viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+                    tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                        override fun onTabSelected(tab: TabLayout.Tab) {
+                            viewPager.currentItem = tab.position
+                        }
+                        override fun onTabUnselected(tab: TabLayout.Tab) {}
+                        override fun onTabReselected(tab: TabLayout.Tab) {}
+                    })
+
                     activeFragment = browseWorkoutFragment
                     binding.appBarLayoutText.text = getString(R.string.browse_icon)
                 }
@@ -198,6 +225,12 @@ class MainActivity : AppCompatActivity() {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.bottom_navigation_menu, menu)
         return true
+    }
+
+    fun onBrowseWorkoutClick(view: View) {
+        fragmentManager.beginTransaction().hide(activeFragment).show(browseWorkoutFragment).commit()
+        activeFragment = browseWorkoutFragment
+
     }
 
 
