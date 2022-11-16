@@ -80,20 +80,23 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        /**sets user id key-value to value of user object within firebase |
-         * returns true if successful, false ow*/
-        fun addUserObjectToFirebase() : Boolean{
-            if(this::userID.isInitialized == false){
-                Log.d("database", "FAILED ADD USER")
-                return false
+
+
+        /**adds a workout object to user database,
+         * does not perform action if parameter is null or workoutData does not have a name
+         * or if userID not initialized*/
+        fun addWorkout(workoutData: WorkoutData){
+            if(workoutData == null || workoutData.name == null || this::userID.isInitialized == false){
+                return
             }
-            Log.d("database", "SUCCESS ADD USER")
-            val user = User(userID)
-
-            database.child(userID).setValue(user)
-
-            return true
+            database.child(userID).child("workouts").child(workoutData.name).setValue(workoutData)
         }
+
+        /**removes all user workouts from database*/
+        fun clearWorkouts(){
+            database.child(userID).child("workouts").setValue(null)
+        }
+
 
         /**listens for changes of userdata and updates UI*/
         fun setDataListener(textView:TextView){
@@ -176,11 +179,22 @@ class MainActivity : AppCompatActivity() {
             val user = FirebaseAuth.getInstance().currentUser
             val isInitialized = databaseManager.isUserInitialized(user!!.uid)
 
-            if(isInitialized){
-                databaseManager.setDataListener(binding.appBarLayoutText)
-            }else{
-               databaseManager.addUserObjectToFirebase()
-            }
+            val workoutData = WorkoutData(name = "NY WORKOUT")
+
+            val exercise = ExerciseData(name = "John's exercise")
+            val exerciseMap = HashMap<String, Any>()
+            exerciseMap.put("John exercise", exercise)
+
+            val exercise2 = ExerciseData(name = "Kady's exercise")
+            exerciseMap.put(exercise2.name!!, exercise2)
+
+
+            workoutData.exercises = exerciseMap
+            databaseManager.clearWorkouts()
+
+
+            databaseManager.setDataListener(binding.appBarLayoutText)
+
 
 
             Log.d(FIREBASE, "SIGNED IN")
@@ -280,6 +294,22 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.bottom_navigation_menu, menu)
         return true
     }
+
+
+
+    data class ExerciseData(
+        val name: String? = null,
+        val reps: Int? = null,
+        val weight: Int? = null,
+        val muscleGroup: String? = null,
+
+    )
+
+    data class WorkoutData(
+        val name: String? = null,
+        var exercises: HashMap<String, Any>? = null,
+        val date: String? = null
+    )
 
 
 
