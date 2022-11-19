@@ -57,7 +57,6 @@ class MainActivity : AppCompatActivity() {
     /**class for managing reading and writing to user data object within firebase database */
     class DatabaseManager(userID: String) {
         val database = Firebase.database.getReference("users")
-        lateinit var user : User
         val userID = userID
         lateinit var eventListener: ValueEventListener //listens for changes to user data in firebase
         val PUSH_MUSCLE_GROUP = "push"
