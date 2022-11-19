@@ -58,7 +58,7 @@ class DatabaseManager(userID: String) {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // Get Post object and use the values to update the UI
-                val post = dataSnapshot.getValue<Any>()
+                val data = dataSnapshot.getValue<Any>()
                 // ...
                 Log.d("firebase", "DATA CHANGED")
 
