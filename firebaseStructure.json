@@ -1,3 +1,6 @@
+//this is the structure for how our user data 
+//is stored within firebase
+
 {
   "users": {
     "DmYwxU4yD1SBTJYk6sVLA0lFnIV2": { //user id
