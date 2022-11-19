@@ -1,0 +1,28 @@
+{
+  "users": {
+    "DmYwxU4yD1SBTJYk6sVLA0lFnIV2": { //user id
+      "workouts": {
+        "MY WORKOUT": {
+          "date": "2022-01-27",
+          "exercises": {
+            "bench press": {
+              "muscleGroup": "none",
+              "name": "bench press",
+              "reps": 8,
+              "sets": 3,
+              "weight": 100
+            },
+            "pullups": {
+              "muscleGroup": "push",
+              "name": "pullups",
+              "reps": 2,
+              "sets": 3,
+              "weight": 120
+            }
+          },
+          "name": "MY WORKOUT"
+        }
+      }
+    }
+  }
+}
