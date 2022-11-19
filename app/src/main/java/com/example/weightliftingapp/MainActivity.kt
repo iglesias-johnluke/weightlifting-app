@@ -59,30 +59,7 @@ class MainActivity : AppCompatActivity() {
         val database = Firebase.database.getReference("users")
         lateinit var user : User
         val userID = userID
-
-        /**returns true if user key is mapped to a User object within firebase, false ow*/
-        fun isUserInitialized(uid:String) : Boolean{
-            var isInitialized = false
-            //get child for uid key within DB
-            database.child(uid).get().addOnSuccessListener {
-                val dataSnapshot= it
-                try{//check snapshot val is of user type
-                    if(  !(dataSnapshot.value is User) ){
-                        throw java.lang.Error("DATASNAPSHOT NOT TYPE USER")
-                    }
-                    user =  dataSnapshot.value as User
-                    isInitialized = true
-                    Log.d("database", user.toString())
-                }catch (e: java.lang.Error){//snapshot val is not type user
-                    Log.d("database", "DATASNAPSHOT NOT TYPE USER")
-                }
-            }.addOnFailureListener{ //failed get child
-                Log.d("database", "FAILED GET CHILD")
-            }
-
-
-            return isInitialized
-        }
+        
 
 
 
