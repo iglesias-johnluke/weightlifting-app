@@ -38,7 +38,13 @@ class MainActivity : AppCompatActivity() {
     private val fragmentManager = supportFragmentManager
     val FIREBASE = "firebase-log"
     private lateinit var auth: FirebaseAuth
-    private var databaseManager : DatabaseManager = DatabaseManager()
+    private lateinit var databaseManager : DatabaseManager
+
+    val PUSH_MUSCLE_GROUP = "push"
+    val PULL_MUSCLE_GROUP = "pull"
+    val LEGS_MUSCLE_GROUP = "legs"
+    val NONE_MUSCLE_GROUP = "none"
+
 
 
     // See: https://developer.android.com/training/basics/intents/result
@@ -49,14 +55,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**class for managing reading and writing to user data object within firebase database*/
-    class DatabaseManager {
+    class DatabaseManager(userID: String) {
         val database = Firebase.database.getReference("users")
         lateinit var user : User
-        lateinit var userID : String
+        val userID = userID
 
         /**returns true if user key is mapped to a User object within firebase, false ow*/
         fun isUserInitialized(uid:String) : Boolean{
-            userID = uid
             var isInitialized = false
             //get child for uid key within DB
             database.child(uid).get().addOnSuccessListener {
@@ -86,7 +91,7 @@ class MainActivity : AppCompatActivity() {
          * does not perform action if parameter is null or workoutData does not have a name
          * or if userID not initialized*/
         fun addWorkout(workoutData: WorkoutData){
-            if(workoutData == null || workoutData.name == null || this::userID.isInitialized == false){
+            if(workoutData == null || workoutData.name == null ){
                 return
             }
             database.child(userID).child("workouts").child(workoutData.name).setValue(workoutData)
@@ -177,23 +182,24 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
-            val isInitialized = databaseManager.isUserInitialized(user!!.uid)
+            databaseManager = DatabaseManager(user!!.uid)
 
-            val workoutData = WorkoutData(name = "NY WORKOUT")
+            val workoutData = WorkoutData(name = "NY WORKOUT", date = "2022-01-27")
 
-            val exercise = ExerciseData(name = "John's exercise")
+            val exercise = ExerciseData(name = "John's exercise", muscleGroup = PUSH_MUSCLE_GROUP)
             val exerciseMap = HashMap<String, Any>()
             exerciseMap.put("John exercise", exercise)
 
-            val exercise2 = ExerciseData(name = "Kady's exercise")
+            val exercise2 = ExerciseData(name = "Kady's exercise", muscleGroup = NONE_MUSCLE_GROUP )
             exerciseMap.put(exercise2.name!!, exercise2)
 
 
             workoutData.exercises = exerciseMap
             databaseManager.clearWorkouts()
+            Log.d("firebase", "CLEARED")
 
 
-            databaseManager.setDataListener(binding.appBarLayoutText)
+//            databaseManager.setDataListener(binding.appBarLayoutText)
 
 
 
@@ -307,7 +313,9 @@ class MainActivity : AppCompatActivity() {
 
     data class WorkoutData(
         val name: String? = null,
+        //exercises map has exercise names as the keys and exercise objects as the values
         var exercises: HashMap<String, Any>? = null,
+        //date string is in format "yyyy-mm-dd"
         val date: String? = null
     )
 
