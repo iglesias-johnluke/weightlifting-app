@@ -118,19 +118,21 @@ class MainActivity : AppCompatActivity() {
         }
 
         /**function demonstrating how to create workoutData instance and add
-         * workout to firebase*/
+         * workout to firebase; this is just for reference*/
         fun demo(){
             val workoutData = WorkoutData(name = "MY WORKOUT", date = "2022-01-27")
 
-            val exercise = ExerciseData(name = "John's exercise", muscleGroup = PUSH_MUSCLE_GROUP)
+            val exercise = ExerciseData(name = "pullups", muscleGroup = PUSH_MUSCLE_GROUP,
+                                        reps = 2, weight = 120, sets = 3)
             val exerciseMap = HashMap<String, Any>()
-            exerciseMap.put("John exercise", exercise)
-            val exercise2 = ExerciseData(name = "Kady's exercise", muscleGroup = NONE_MUSCLE_GROUP )
+            exerciseMap.put("pullups", exercise)
+            val exercise2 = ExerciseData(name = "bench press", muscleGroup = NONE_MUSCLE_GROUP,
+                                        reps = 8, weight = 100, sets = 3 )
             exerciseMap.put(exercise2.name!!, exercise2)
             workoutData.exercises = exerciseMap
 
-//            addWorkout(workoutData)
-            clearWorkouts()
+            addWorkout(workoutData)
+//            clearWorkouts()
         }
 
 
@@ -196,7 +198,7 @@ class MainActivity : AppCompatActivity() {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
             databaseManager = DatabaseManager(user!!.uid)
-
+            databaseManager.demo()
             databaseManager.setDataListener()
 
             Log.d(FIREBASE, "SIGNED IN")
@@ -268,6 +270,7 @@ class MainActivity : AppCompatActivity() {
         val name: String? = null,
         val reps: Int? = null,
         val weight: Int? = null,
+        val sets: Int? = null,
         val muscleGroup: String? = null,
 
     )
