@@ -59,35 +59,50 @@ class MainActivity : AppCompatActivity() {
         val database = Firebase.database.getReference("users")
         lateinit var user : User
         val userID = userID
-        
-
-
+        lateinit var eventListener: ValueEventListener //listens for changes to user data in firebase
 
 
         /**adds a workout object to user database,
          * does not perform action if parameter is null or workoutData does not have a name
          * or if userID not initialized*/
         fun addWorkout(workoutData: WorkoutData){
-            if(workoutData == null || workoutData.name == null ){
+            if(workoutData == null || workoutData.name == null || userID == null ){
                 return
             }
-            database.child(userID).child("workouts").child(workoutData.name).setValue(workoutData)
+            database.child(userID).child("workouts").child(workoutData.name)
+                .setValue(workoutData)
+                .addOnSuccessListener {
+                    Log.d("firebase", "SUCCESSFULLY to add workout")
+                }
+                .addOnFailureListener{
+                    Log.d("firebase", "FAILED to add workout due to: " + it)
+                }
+
         }
 
         /**removes all user workouts from database*/
         fun clearWorkouts(){
+            if(userID == null){
+                return
+            }
             database.child(userID).child("workouts").setValue(null)
+                .addOnSuccessListener {
+                    Log.d("firebase", "SUCCESSFULLY cleared workouts")
+                }
+                .addOnFailureListener{
+                    Log.d("firebase", "FAILED to clear workouts due to: " + it)
+                }
         }
 
 
         /**listens for changes of userdata and updates UI*/
-        fun setDataListener(textView:TextView){
+        fun setDataListener(){
             val postListener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     // Get Post object and use the values to update the UI
-                    val post = dataSnapshot.getValue<String>()
+                    val post = dataSnapshot.getValue<Any>()
                     // ...
-                    textView.text = post
+                    Log.d("firebase", "DATA CHANGED")
 
                 }
 
@@ -95,6 +110,7 @@ class MainActivity : AppCompatActivity() {
                     // Getting Post failed, log a message
                 }
             }
+            this.eventListener = postListener
             database.child(userID).addValueEventListener(postListener)
         }
 
@@ -175,8 +191,10 @@ class MainActivity : AppCompatActivity() {
             databaseManager.clearWorkouts()
             Log.d("firebase", "CLEARED")
 
+            databaseManager.addWorkout(workoutData)
 
-//            databaseManager.setDataListener(binding.appBarLayoutText)
+
+            databaseManager.setDataListener()
 
 
 
@@ -233,6 +251,14 @@ class MainActivity : AppCompatActivity() {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.bottom_navigation_menu, menu)
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //remove listener to changes for user data within firebase
+        databaseManager.database.child(databaseManager.userID)
+            .removeEventListener(databaseManager.eventListener)
+
     }
 
 
