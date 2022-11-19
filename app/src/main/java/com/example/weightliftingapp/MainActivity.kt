@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                 .addOnCompleteListener {
                     createSignInIntent()
 
-                    finish()
+
                 }
         }
 
@@ -215,49 +215,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    open fun emailLink() {
-        // [START auth_fui_email_link]
-        val actionCodeSettings = ActionCodeSettings.newBuilder()
-            .setAndroidPackageName( /* yourPackageName= */
-                "com.example.weightliftingapp\n",  /* installIfNotAvailable= */
-                true,  /* minimumVersion= */
-                null)
-            .setHandleCodeInApp(true) // This must be set to true
-            .setUrl("https://google.com") // This URL needs to be whitelisted
-            .build()
-
-        val providers = listOf(
-            EmailBuilder()
-                .enableEmailLinkSignIn()
-                .setActionCodeSettings(actionCodeSettings)
-                .build()
-        )
-        val signInIntent = AuthUI.getInstance()
-            .createSignInIntentBuilder()
-            .setAvailableProviders(providers)
-            .build()
-        signInLauncher.launch(signInIntent)
-        // [END auth_fui_email_link]
-    }
-
-    open fun catchEmailLink() {
-        val providers: List<IdpConfig> = emptyList()
-
-        // [START auth_fui_email_link_catch]
-        if (AuthUI.canHandleIntent(intent)) {
-            val extras = intent.extras ?: return
-            val link = extras.getString("email_link_sign_in")
-            if (link != null) {
-                val signInIntent = AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setEmailLink(link)
-                    .setAvailableProviders(providers)
-                    .build()
-                signInLauncher.launch(signInIntent)
-            }
-        }
-        // [END auth_fui_email_link_catch]
-    }
 
 
     //initializes nav bar and fragment views
