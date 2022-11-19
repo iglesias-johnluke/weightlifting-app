@@ -54,13 +54,16 @@ class MainActivity : AppCompatActivity() {
         this.onSignInResult(res)
     }
 
-    /**class for managing reading and writing to user data object within firebase database*/
+    /**class for managing reading and writing to user data object within firebase database */
     class DatabaseManager(userID: String) {
         val database = Firebase.database.getReference("users")
         lateinit var user : User
         val userID = userID
         lateinit var eventListener: ValueEventListener //listens for changes to user data in firebase
-
+        val PUSH_MUSCLE_GROUP = "push"
+        val PULL_MUSCLE_GROUP = "pull"
+        val LEGS_MUSCLE_GROUP = "legs"
+        val NONE_MUSCLE_GROUP = "none"
 
         /**adds a workout object to user database,
          * does not perform action if parameter is null or workoutData does not have a name
@@ -113,6 +116,23 @@ class MainActivity : AppCompatActivity() {
             this.eventListener = postListener
             database.child(userID).addValueEventListener(postListener)
         }
+
+        /**function demonstrating how to create workoutData instance and add
+         * workout to firebase*/
+        fun demo(){
+            val workoutData = WorkoutData(name = "MY WORKOUT", date = "2022-01-27")
+
+            val exercise = ExerciseData(name = "John's exercise", muscleGroup = PUSH_MUSCLE_GROUP)
+            val exerciseMap = HashMap<String, Any>()
+            exerciseMap.put("John exercise", exercise)
+            val exercise2 = ExerciseData(name = "Kady's exercise", muscleGroup = NONE_MUSCLE_GROUP )
+            exerciseMap.put(exercise2.name!!, exercise2)
+            workoutData.exercises = exerciseMap
+
+//            addWorkout(workoutData)
+            clearWorkouts()
+        }
+
 
 
     }
@@ -177,26 +197,7 @@ class MainActivity : AppCompatActivity() {
             val user = FirebaseAuth.getInstance().currentUser
             databaseManager = DatabaseManager(user!!.uid)
 
-            val workoutData = WorkoutData(name = "NY WORKOUT", date = "2022-01-27")
-
-            val exercise = ExerciseData(name = "John's exercise", muscleGroup = PUSH_MUSCLE_GROUP)
-            val exerciseMap = HashMap<String, Any>()
-            exerciseMap.put("John exercise", exercise)
-
-            val exercise2 = ExerciseData(name = "Kady's exercise", muscleGroup = NONE_MUSCLE_GROUP )
-            exerciseMap.put(exercise2.name!!, exercise2)
-
-
-            workoutData.exercises = exerciseMap
-            databaseManager.clearWorkouts()
-            Log.d("firebase", "CLEARED")
-
-            databaseManager.addWorkout(workoutData)
-
-
             databaseManager.setDataListener()
-
-
 
             Log.d(FIREBASE, "SIGNED IN")
 
