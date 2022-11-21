@@ -2,7 +2,7 @@
 
 
 ## dependencies
-- emulator with API 30 or below
+- emulator with API 31 or higher
 
 ## If resetting password:
 - check spam folder for password reset email
