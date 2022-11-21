@@ -52,13 +52,34 @@ class DatabaseManager(userID: String) {
             }
     }
 
+    /**explicit get method for retrieving user data, |
+     * onSuccessful invokes each functionReference parameter with the user data hashmap |
+     * this just is another way to retrieve user data as compared to onDataChange()
+     * callback
+     * */
+    fun getUserData(vararg functionReferences: (data: HashMap<String, Any>) -> Unit ){
+        database.child(userID).get().addOnSuccessListener {
+            val data : HashMap<String, Any> = it.value as HashMap<String, Any>
+            for(f in functionReferences){
+                f(data)
+            }
+            Log.i("getUserData", "Got value ${it.value}")
+        }.addOnFailureListener{
+            Log.e("getUserData", "Error getting data", it)
+        }
+    }
 
-    /**listens for changes of userdata and updates UI*/
-    fun setDataListener(){
+    /**listens for changes of userdata and calls each functionReference argument given the user data |
+     * function call can have any number of arguments, only accepts function references
+     * as arguments | each function reference can only accept one argument (the data hashmap) */
+    fun setDataListener(vararg functionReferences: (data: HashMap<String, Any>) -> Unit){
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // Get Post object and use the values to update the UI
-                val data = dataSnapshot.getValue<Any>()
+                // Get data hashmap object and use the values to update the UI
+                val data = dataSnapshot.getValue<HashMap<String, Any>>()!!
+                for(f in functionReferences){//call each functionReference with user data map
+                    f(data)
+                }
                 // ...
                 Log.d("firebase", "DATA CHANGED")
 

@@ -8,8 +8,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
 import android.view.Menu
-import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.weightliftingapp.databinding.ActivityMainBinding
@@ -23,17 +21,9 @@ import android.widget.ExpandableListView
 import androidx.viewpager.widget.ViewPager
 import com.example.weightliftingapp.ExpandableListData.data
 import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.AuthUI.IdpConfig
-import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.android.material.tabs.TabLayout
-import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 
@@ -135,9 +125,8 @@ class MainActivity : AppCompatActivity() {
             val user = FirebaseAuth.getInstance().currentUser
             sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
             sharedViewModel.databaseManager = DatabaseManager(user!!.uid)
-//            sharedViewModel.databaseManager.demo()
             sharedViewModel.databaseManager.setDataListener()
-
+            
             Log.d(FIREBASE, "SIGNED IN")
 
 
@@ -150,50 +139,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    open fun emailLink() {
-        // [START auth_fui_email_link]
-        val actionCodeSettings = ActionCodeSettings.newBuilder()
-            .setAndroidPackageName( /* yourPackageName= */
-                "com.example.weightliftingapp\n",  /* installIfNotAvailable= */
-                true,  /* minimumVersion= */
-                null
-            )
-            .setHandleCodeInApp(true) // This must be set to true
-            .setUrl("https://google.com") // This URL needs to be whitelisted
-            .build()
 
-        val providers = listOf(
-            EmailBuilder()
-                .enableEmailLinkSignIn()
-                .setActionCodeSettings(actionCodeSettings)
-                .build()
-        )
-        val signInIntent = AuthUI.getInstance()
-            .createSignInIntentBuilder()
-            .setAvailableProviders(providers)
-            .build()
-        signInLauncher.launch(signInIntent)
-        // [END auth_fui_email_link]
-    }
-
-    open fun catchEmailLink() {
-        val providers: List<IdpConfig> = emptyList()
-
-        // [START auth_fui_email_link_catch]
-        if (AuthUI.canHandleIntent(intent)) {
-            val extras = intent.extras ?: return
-            val link = extras.getString("email_link_sign_in")
-            if (link != null) {
-                val signInIntent = AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setEmailLink(link)
-                    .setAvailableProviders(providers)
-                    .build()
-                signInLauncher.launch(signInIntent)
-            }
-        }
-        // [END auth_fui_email_link_catch]
-    }
 
 
     //initializes nav bar and fragment views
