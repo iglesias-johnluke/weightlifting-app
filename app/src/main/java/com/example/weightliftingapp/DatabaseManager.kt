@@ -112,7 +112,7 @@ class DatabaseManager(userID: String) {
         exerciseMap.put(exercise2.name!!, exercise2)
         workoutData.exercises = exerciseMap
 
-//        addWorkout(workoutData)
+        addWorkout(workoutData)
 //        clearWorkouts()
     }
     data class Exercise(
