@@ -31,4 +31,8 @@ class PastWorkouts : Fragment() {
         return rootview
     }
 
+    fun organizeWorkouts(data: HashMap<String, Any>) {
+       data.keys
+    }
+
 }
