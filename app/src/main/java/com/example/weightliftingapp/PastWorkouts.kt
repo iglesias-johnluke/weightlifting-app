@@ -20,10 +20,6 @@ class PastWorkouts : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val user = FirebaseAuth.getInstance().currentUser
-        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-        sharedViewModel.databaseManager = DatabaseManager(user!!.uid)
-        val firebaseData = sharedViewModel.databaseManager.getUserData(::organizeWorkouts)
         val rootview: View =
             inflater.inflate(R.layout.fragment_browse_pastworkouts, container, false)
         val recyclerView: RecyclerView = rootview.findViewById(R.id.pastworkoutrecycler)
@@ -38,11 +34,21 @@ class PastWorkouts : Fragment() {
         data.add(viewModel)
         val adapter = PastWorkoutsAdapter(data)
         recyclerView.adapter = adapter
+
+
         return rootview
     }
 
+    override fun onResume() {
+        super.onResume()
+        sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
+        Log.d("organizeWorkouts mainActivity", requireActivity().toString())
+        Log.i("organizeWorkouts", sharedViewModel.databaseManager.toString())
+        sharedViewModel.databaseManager.getUserData(::organizeWorkouts)
+    }
+
     private fun organizeWorkouts(hashMap: HashMap<String, Any>) {
-        Log.i("data: ", hashMap.toString())
+        Log.i("organizeWorkouts user data", hashMap.toString())
     }
 
 }
