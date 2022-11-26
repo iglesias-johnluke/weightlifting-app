@@ -76,6 +76,9 @@ class DatabaseManager(userID: String) {
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // Get data hashmap object and use the values to update the UI
+                if(dataSnapshot.value == null){
+                    return
+                }
                 val data = dataSnapshot.getValue<HashMap<String, Any>>()!!
                 for(f in functionReferences){//call each functionReference with user data map
                     f(data)
