@@ -45,6 +45,14 @@ class PastWorkouts : Fragment() {
         Log.d("organizeWorkouts mainActivity", requireActivity().toString())
         Log.i("organizeWorkouts", sharedViewModel.databaseManager.toString())
         sharedViewModel.databaseManager.getUserData(::organizeWorkouts)
+
+//        val user = FirebaseAuth.getInstance().currentUser
+//        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+//        sharedViewModel.databaseManager = DatabaseManager(user!!.uid)
+//        Log.d("organizeWorkouts mainActivity", requireActivity().toString())
+//        Log.i("organizeWorkouts", sharedViewModel.databaseManager.toString())
+//        sharedViewModel.databaseManager.getUserData(::organizeWorkouts)
+
     }
 
     private fun organizeWorkouts(hashMap: HashMap<String, Any>) {
