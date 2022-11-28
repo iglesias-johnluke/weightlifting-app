@@ -14,6 +14,8 @@ import com.google.firebase.auth.FirebaseAuth
 class PastWorkouts : Fragment() {
 
     lateinit var sharedViewModel :SharedViewModel
+    var pastWorkouts: ArrayList<PastWorkoutViewModel> = ArrayList()
+    lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,18 +24,9 @@ class PastWorkouts : Fragment() {
 
         val rootview: View =
             inflater.inflate(R.layout.fragment_browse_pastworkouts, container, false)
-        val recyclerView: RecyclerView = rootview.findViewById(R.id.pastworkoutrecycler)
+        recyclerView = rootview.findViewById(R.id.pastworkoutrecycler)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val data = ArrayList<PastWorkoutViewModel>()
-        val viewModel = PastWorkoutViewModel(
-            "Monday, December 1",
-            "Exercise - Sets - Reps - Weight",
-            "Bench Press - 6 sets - 8 reps - 135 lbs"
-        )
-        data.add(viewModel)
-        val adapter = PastWorkoutsAdapter(data)
-        recyclerView.adapter = adapter
+
 
 
         return rootview
@@ -42,21 +35,46 @@ class PastWorkouts : Fragment() {
     override fun onResume() {
         super.onResume()
         sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
-        Log.d("organizeWorkouts mainActivity", requireActivity().toString())
-        Log.i("organizeWorkouts", sharedViewModel.databaseManager.toString())
         sharedViewModel.databaseManager.getUserData(::organizeWorkouts)
-
-//        val user = FirebaseAuth.getInstance().currentUser
-//        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-//        sharedViewModel.databaseManager = DatabaseManager(user!!.uid)
-//        Log.d("organizeWorkouts mainActivity", requireActivity().toString())
-//        Log.i("organizeWorkouts", sharedViewModel.databaseManager.toString())
-//        sharedViewModel.databaseManager.getUserData(::organizeWorkouts)
 
     }
 
-    private fun organizeWorkouts(hashMap: HashMap<String, Any>) {
-        Log.i("organizeWorkouts user data", hashMap.toString())
+    private fun organizeWorkouts(data: HashMap<String, Any>) {
+        Log.i("organizeWorkouts user data", data.toString())
+        val workouts = data["workouts"] as HashMap<String, Any>
+        for (w in workouts.keys) {
+            val wrkt = workouts[w] as HashMap<String, Any>
+            Log.i("w", w)
+            Log.i("exercises", workouts[w].toString())
+            Log.i("date", wrkt["date"].toString())
+
+            val date = wrkt["date"].toString()
+            val exercises = wrkt["exercises"] as HashMap<String, Any>
+            val organizedExercises = organizeExercises(exercises)
+
+            pastWorkouts.add(PastWorkoutViewModel(
+                "Workout: $date",
+                "Exercise - Muscle Group - Sets - Reps - Weight",
+                organizedExercises
+            ))
+        }
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = PastWorkoutsAdapter(pastWorkouts)
+        recyclerView.adapter = adapter
+        Log.i("pastWorkouts", pastWorkouts.toString())
+
+
+
+    }
+
+    private fun organizeExercises(exercises: HashMap<String, Any>): String {
+        var res = ""
+        for (e in exercises.keys) {
+            val exercise = exercises[e] as HashMap<String, Any>
+            val exerciseStr = e + " - " + exercise["muscleGroup"].toString() + " - " + exercise["sets"].toString() + " - " + exercise["reps"].toString() + " - " + exercise["weight"].toString() + '\n'
+            res += exerciseStr
+        }
+        return res
     }
 
 }
