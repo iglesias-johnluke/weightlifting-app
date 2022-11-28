@@ -1,16 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DataFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/dataTextview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="DATA FRAGMENT"
-        />
 
-</FrameLayout>
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pie"
+        android:layout_width="198dp"
+        android:layout_height="301dp"
+
+        android:layout_x="2dp"
+        android:layout_y="2dp"
+        app:layout_constraintRight_toLeftOf="@+id/week"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="3dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <TextView
+        android:id="@+id/consistency"
+        android:layout_width="174dp"
+        android:layout_height="43dp"
+        android:layout_x="200dp"
+        android:layout_y="44dp"
+        android:text="Consistency"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+
+        tools:layout_editor_absoluteX="233dp"
+        tools:layout_editor_absoluteY="65dp" />
+
+    <Button
+        android:id="@+id/week"
+        android:layout_width="60dp"
+        android:layout_height="48dp"
+        android:layout_x="199dp"
+        android:layout_y="113dp"
+        android:text="Week"
+        android:textSize="8sp"
+        tools:layout_editor_absoluteX="209dp"
+        tools:layout_editor_absoluteY="98dp" />
+
+    <Button
+        android:id="@+id/month"
+        android:layout_width="65dp"
+        android:layout_height="48dp"
+        android:layout_x="254dp"
+        android:layout_y="113dp"
+        android:text="Month"
+        android:textSize="8sp"
+        tools:layout_editor_absoluteX="276dp"
+        tools:layout_editor_absoluteY="98dp" />
+
+    <Button
+        android:id="@+id/year"
+        android:layout_width="60dp"
+        android:layout_height="48dp"
+        android:layout_x="314dp"
+        android:layout_y="113dp"
+        android:text="Year"
+        android:textSize="8sp"
+        tools:layout_editor_absoluteX="343dp"
+        tools:layout_editor_absoluteY="98dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="201dp"
+        android:layout_y="189dp"
+        android:text="Total Workouts:"
+        tools:layout_editor_absoluteX="233dp"
+        tools:layout_editor_absoluteY="174dp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="203dp"
+        android:layout_y="219dp"
+        android:text="Average per Week:"
+        tools:layout_editor_absoluteX="233dp"
+        tools:layout_editor_absoluteY="206dp"
+        tools:text="Average per Week:" />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_x="1dp"
+        android:layout_y="367dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="171dp"
+        android:layout_height="51dp"
+        android:layout_x="116dp"
+        android:layout_y="332dp"
+        android:text="Reps By Muscle"
+        android:textAlignment="center"
+        android:textSize="20sp" />
+
+
+</AbsoluteLayout>
