@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setFragments()
+        //setFragments()
 
         // Initialize Firebase Auth
         auth = Firebase.auth
@@ -99,6 +99,9 @@ class MainActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         if (currentUser == null) { //if user not logged in, show sign-in activity
             createSignInIntent()
+        }
+        else{
+            //setFragments()
         }
     }
 
@@ -125,8 +128,10 @@ class MainActivity : AppCompatActivity() {
             val user = FirebaseAuth.getInstance().currentUser
             sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
             sharedViewModel.databaseManager = DatabaseManager(user!!.uid)
+            //sharedViewModel.databaseManager.demo()
             sharedViewModel.databaseManager.setDataListener()
-            
+
+            setFragments()
             Log.d(FIREBASE, "SIGNED IN")
 
         } else {

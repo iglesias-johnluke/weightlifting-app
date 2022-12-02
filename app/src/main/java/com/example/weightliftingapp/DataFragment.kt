@@ -3,6 +3,7 @@ package com.example.weightliftingapp
 import android.R
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,28 +76,58 @@ class DataFragment : Fragment() {
 
 
         makePie()
-        fillPie()
-        fillBar()
+        //fillPie()
+        //fillBar()
 
 
         sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
+        //Log.i("list",ExpandableListData.data["CHEST"].toString())
+        sharedViewModel.databaseManager.getUserData(::fillBar,::fillPie)
 
         return binding.root
     }
 
-    fun fillBar(){
+    fun fillBar(data: HashMap<String, Any>){
 
+        var types = ExpandableListData.data
+        var muscleCounts = HashMap<String,Long>()
+
+        val workouts = data["workouts"] as HashMap<String, Any>
+
+        for (w in workouts.keys) {
+            val wrkt = workouts[w] as HashMap<String, Any>
+            val exercises = wrkt["exercises"] as HashMap<String, Any>
+
+            for (e in exercises.keys) {
+                val exercise = exercises[e] as HashMap<String, Any>
+
+                for (type in types.keys){
+
+                    if (types[type]!!.contains(e)){
+                        when (val count = muscleCounts[type])
+                        {
+                            null -> muscleCounts[type] = exercise["sets"] as Long
+                            else -> muscleCounts[type] = count + exercise["sets"] as Long
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+
+        var i = 0
         var bars = ArrayList<BarEntry>()
-        bars.add(BarEntry(0F,4F))
-        bars.add(BarEntry(1F,6F))
-        bars.add(BarEntry(2F,5F))
-        bars.add(BarEntry(3F,9F))
-        bars.add(BarEntry(4F,0F))
-        bars.add(BarEntry(5F,2F))
-        bars.add(BarEntry(6F,8F))
-        bars.add(BarEntry(7F,6F))
-        bars.add(BarEntry(8F,1F))
-        bars.add(BarEntry(9F,7F))
+        var muscles = ArrayList<String>()
+
+        for (t in muscleCounts.keys){
+            bars.add(BarEntry(i.toFloat(), muscleCounts[t]!!.toFloat()))
+            muscles.add(t)
+            i++
+        }
+
+
 
         var colors = ArrayList<Int>()
 
@@ -107,18 +138,6 @@ class DataFragment : Fragment() {
         var set = BarDataSet(bars,"Muscle")
 
         set.colors=colors
-
-        var muscles = ArrayList<String>()
-        muscles.add("Chest")
-        muscles.add("Shoulders")
-        muscles.add("Bicep")
-        muscles.add("Tricep")
-        muscles.add("Back")
-        muscles.add("Hamstring")
-        muscles.add("Thighs")
-        muscles.add("Glutes")
-        muscles.add("Calves")
-        muscles.add("Abs")
 
         var dat = BarData(set)
 
@@ -139,13 +158,58 @@ class DataFragment : Fragment() {
 
 
     }
-    fun fillPie(){
+    fun fillPie(data: HashMap<String, Any>){
+
+        var pushes = 0
+        var pulls = 0
+        var legs = 0
+        var none = 0
+
+        val workouts = data["workouts"] as HashMap<String, Any>
+
+        for (w in workouts.keys) {
+            val wrkt = workouts[w] as HashMap<String, Any>
+            val exercises = wrkt["exercises"] as HashMap<String, Any>
+
+            for (e in exercises.keys) {
+                val exercise = exercises[e] as HashMap<String, Any>
+                if (exercise["muscleGroup"].toString() == "push"){
+                    pushes++
+                }
+                else if (exercise["muscleGroup"].toString() == "pull"){
+                    pulls++
+                }
+                else if (exercise["muscleGroup"].toString() == "legs"){
+                    legs++
+                }
+                else{
+                    none++
+                }
+
+            }
+        }
+
 
         var slices = ArrayList<PieEntry>()
 
-        slices.add(PieEntry(0.3F,"Push"))
-        slices.add(PieEntry(0.3F,"Pull"))
-        slices.add(PieEntry(0.4F,"Legs"))
+        var total = pushes+pulls+legs+none
+        /*Log.i("total:",total.toString())
+        Log.i("pushes", pushes.toString())
+        Log.i("none", none.toString())
+        Log.i("pushes/total",(pushes.toDouble()/total).toString())
+        Log.i("none/total",(none.toDouble()/total).toString())*/
+        if (pushes!=0) {
+            slices.add(PieEntry((pushes.toDouble() / total).toFloat(), "Push"))
+        }
+        if(pulls!=0) {
+            slices.add(PieEntry((pulls.toDouble() / total).toFloat(), "Pull"))
+        }
+        if(legs!=0) {
+            slices.add(PieEntry((legs.toDouble() / total).toFloat(), "Legs"))
+        }
+        if(none!=0) {
+            slices.add(PieEntry((none.toDouble() / total).toFloat(), "N/A"))
+        }
 
         var colors = ArrayList<Int>()
 
@@ -153,16 +217,16 @@ class DataFragment : Fragment() {
             colors.add(n)
         }
 
-        var set = PieDataSet(slices,"Workout Type")
+        var set = PieDataSet(slices,"Type")
         set.setColors(colors)
 
-        var data = PieData(set)
-        data.setDrawValues(true)
-        data.setValueFormatter(PercentFormatter(pieChart))
-        data.setValueTextSize(12F)
-        data.setValueTextColor(Color.BLACK)
+        var pdata = PieData(set)
+        pdata.setDrawValues(true)
+        pdata.setValueFormatter(PercentFormatter(pieChart))
+        pdata.setValueTextSize(12F)
+        pdata.setValueTextColor(Color.BLACK)
 
-        pieChart.data = data
+        pieChart.data = pdata
 
         pieChart.invalidate()
     }

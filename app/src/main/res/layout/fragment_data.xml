@@ -103,7 +103,7 @@
         android:layout_height="51dp"
         android:layout_x="116dp"
         android:layout_y="332dp"
-        android:text="Reps By Muscle"
+        android:text="Sets By Muscle"
         android:textAlignment="center"
         android:textSize="20sp" />
 

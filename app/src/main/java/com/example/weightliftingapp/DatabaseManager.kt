@@ -100,16 +100,17 @@ class DatabaseManager(userID: String) {
      * workout to firebase; this is just for reference; uncomment last 2 statements
      * to either clear or add workouts*/
     fun demo(){
+        clearWorkouts()
         val workoutData = Workout(name = "MY WORKOUT", date = "2022-01-27")
 
         val exercise = Exercise(
-            name = "pullups", muscleGroup = PUSH_MUSCLE_GROUP,
+            name = "Pull-Ups", muscleGroup = PUSH_MUSCLE_GROUP,
             reps = 2, weight = 120, sets = 3
         )
         val exerciseMap = HashMap<String, Any>()
-        exerciseMap.put("pullups", exercise)
+        exerciseMap.put("Pull-Ups", exercise)
         val exercise2 = Exercise(
-            name = "bench press", muscleGroup = NONE_MUSCLE_GROUP,
+            name = "Bench Press", muscleGroup = NONE_MUSCLE_GROUP,
             reps = 8, weight = 100, sets = 3
         )
         exerciseMap.put(exercise2.name!!, exercise2)
