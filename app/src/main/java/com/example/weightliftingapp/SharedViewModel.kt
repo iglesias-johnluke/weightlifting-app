@@ -3,6 +3,9 @@ package com.example.weightliftingapp
 import androidx.lifecycle.ViewModel
 
 class SharedViewModel : ViewModel() {
-    lateinit var databaseManager : DatabaseManager
+    lateinit var databaseManager: DatabaseManager
+
+
+    fun isdbInit() = ::databaseManager.isInitialized
 
 }

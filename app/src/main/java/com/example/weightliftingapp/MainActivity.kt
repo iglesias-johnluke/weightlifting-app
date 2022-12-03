@@ -100,6 +100,9 @@ class MainActivity : AppCompatActivity() {
         if (currentUser == null) { //if user not logged in, show sign-in activity
             createSignInIntent()
         }
+        else{
+            //setFragments()
+        }
     }
 
     /** launches sign-in activity */
@@ -125,8 +128,10 @@ class MainActivity : AppCompatActivity() {
             val user = FirebaseAuth.getInstance().currentUser
             sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
             sharedViewModel.databaseManager = DatabaseManager(user!!.uid)
+            //sharedViewModel.databaseManager.demo()
             sharedViewModel.databaseManager.setDataListener()
-            
+
+            //setFragments()
             Log.d(FIREBASE, "SIGNED IN")
 
         } else {
