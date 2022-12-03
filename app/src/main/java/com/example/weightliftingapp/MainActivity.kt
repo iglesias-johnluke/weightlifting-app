@@ -231,7 +231,9 @@ class MainActivity : AppCompatActivity() {
 
 
                         workoutData.exercises = exerciseMap
-
+                        if(::sharedViewModel.isInitialized == false){
+                            sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+                        }
                         sharedViewModel.databaseManager.addWorkout(workoutData)
                     }
                 }
