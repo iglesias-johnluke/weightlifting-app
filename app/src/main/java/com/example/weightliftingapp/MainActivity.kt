@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
             sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-            sharedViewModel.databaseManager = DatabaseManager(user!!.uid)
+            sharedViewModel.setDatabaseManager()
             //sharedViewModel.databaseManager.demo()
             sharedViewModel.databaseManager.setDataListener()
 

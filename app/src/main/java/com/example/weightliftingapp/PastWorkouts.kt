@@ -35,6 +35,9 @@ class PastWorkouts : Fragment() {
     override fun onResume() {
         super.onResume()
         sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
+        if(sharedViewModel.isdbInit() == false){
+            sharedViewModel.setDatabaseManager()
+        }
         sharedViewModel.databaseManager.getUserData(::organizeWorkouts)
 
     }

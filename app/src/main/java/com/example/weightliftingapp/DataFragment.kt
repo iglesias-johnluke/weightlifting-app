@@ -100,21 +100,21 @@ class DataFragment : Fragment() {
 
             super.onResume()
 
-        if (sharedViewModel.isdbInit()) {
+        if (sharedViewModel.isdbInit() == false) {
+            sharedViewModel.setDatabaseManager()
 
+        }
+        //Log.i("list",ExpandableListData.data["CHEST"].toString())
+        sharedViewModel.databaseManager.getUserData(::fillBar, ::fillPie)
 
-            //Log.i("list",ExpandableListData.data["CHEST"].toString())
-            sharedViewModel.databaseManager.getUserData(::fillBar, ::fillPie)
-
-            month.setOnClickListener {
-                sharedViewModel.databaseManager.getUserData(::monthClick)
-            }
-            year.setOnClickListener {
-                sharedViewModel.databaseManager.getUserData(::yearClick)
-            }
-            allT.setOnClickListener {
-                sharedViewModel.databaseManager.getUserData(::allClick)
-            }
+        month.setOnClickListener {
+            sharedViewModel.databaseManager.getUserData(::monthClick)
+        }
+        year.setOnClickListener {
+            sharedViewModel.databaseManager.getUserData(::yearClick)
+        }
+        allT.setOnClickListener {
+            sharedViewModel.databaseManager.getUserData(::allClick)
         }
 
     }
