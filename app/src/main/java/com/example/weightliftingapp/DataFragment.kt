@@ -328,7 +328,7 @@ class DataFragment : Fragment() {
             slices.add(PieEntry((legs.toDouble() / total).toFloat(), "Legs"))
         }
         if(none!=0) {
-            slices.add(PieEntry((none.toDouble() / total).toFloat(), "N/A"))
+            slices.add(PieEntry((none.toDouble() / total).toFloat(), "Other"))
         }
 
         var colors = ArrayList<Int>()
