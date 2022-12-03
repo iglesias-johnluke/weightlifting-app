@@ -16,12 +16,15 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 
 import com.google.firebase.auth.FirebaseAuth
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ExpandableListAdapter
 import android.widget.ExpandableListView
 import androidx.viewpager.widget.ViewPager
 import com.example.weightliftingapp.ExpandableListData.data
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -173,6 +176,64 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                     activeFragment = logFragment
                     binding.appBarLayoutText.text = getString(R.string.log_icon)
+
+                    val exerciseMap = HashMap<String, Any>()
+
+                    var addExercise = findViewById<Button>(R.id.logAddExercise)
+                    var logWorkout = findViewById<Button>(R.id.logWorkout)
+
+                    addExercise.setOnClickListener {
+                        val date = findViewById<View>(R.id.logWorkoutDate) as EditText
+                        val workoutDate = date.text.toString()
+
+                        val type = findViewById<View>(R.id.logWorkoutType) as EditText
+                        val workoutType = type.text.toString()
+
+                        val name = findViewById<View>(R.id.logExerciseName) as EditText
+                        val exerciseName = name.text.toString()
+
+                        val sets = findViewById<View>(R.id.logExerciseSets) as EditText
+                        val exerciseSets = sets.text.toString().toInt()
+
+                        val reps = findViewById<View>(R.id.logExerciseReps) as EditText
+                        val exerciseReps = reps.text.toString().toInt()
+
+                        val weight = findViewById<View>(R.id.logExerciseWeight) as EditText
+                        val exerciseWeight = weight.text.toString().toInt()
+
+
+                        val exercise = DatabaseManager.Exercise(
+                            name = exerciseName, muscleGroup = workoutType,
+                            reps = exerciseReps, weight = exerciseWeight,
+                            sets = exerciseSets
+                        )
+
+                        Snackbar.make(binding.root, "$exerciseName added to $workoutType workout", Snackbar.LENGTH_SHORT).show()
+
+                        exerciseMap[exerciseName] = exercise
+
+                        findViewById<EditText>(R.id.logExerciseName).text.clear()
+                        findViewById<EditText>(R.id.logExerciseSets).text.clear()
+                        findViewById<EditText>(R.id.logExerciseReps).text.clear()
+                        findViewById<EditText>(R.id.logExerciseWeight).text.clear()
+                    }
+
+                    logWorkout.setOnClickListener {
+
+                        val date = findViewById<View>(R.id.logWorkoutDate) as EditText
+                        val workoutDate = date.text.toString()
+
+                        val type = findViewById<View>(R.id.logWorkoutType) as EditText
+                        val workoutType = type.text.toString()
+
+                        val workoutData =
+                            DatabaseManager.Workout(name = "$workoutType workout", date = workoutDate)
+
+
+                        workoutData.exercises = exerciseMap
+
+                        sharedViewModel.databaseManager.addWorkout(workoutData)
+                    }
                 }
                 R.id.browse_page -> {
                     fragmentManager.beginTransaction().hide(activeFragment)
