@@ -28,7 +28,7 @@
         android:layout_height="43dp"
         android:layout_x="200dp"
         android:layout_y="44dp"
-        android:text="Consistency"
+        android:text="Statistics"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -37,40 +37,40 @@
         tools:layout_editor_absoluteY="65dp" />
 
     <Button
-        android:id="@+id/week"
-        android:layout_width="60dp"
+        android:id="@+id/month"
+        android:layout_width="65dp"
         android:layout_height="48dp"
         android:layout_x="199dp"
         android:layout_y="113dp"
-        android:text="Week"
+        android:text="Month"
         android:textSize="8sp"
         tools:layout_editor_absoluteX="209dp"
         tools:layout_editor_absoluteY="98dp" />
 
     <Button
-        android:id="@+id/month"
+        android:id="@+id/year"
         android:layout_width="65dp"
         android:layout_height="48dp"
         android:layout_x="254dp"
         android:layout_y="113dp"
-        android:text="Month"
+        android:text="Year"
         android:textSize="8sp"
         tools:layout_editor_absoluteX="276dp"
         tools:layout_editor_absoluteY="98dp" />
 
     <Button
-        android:id="@+id/year"
+        android:id="@+id/all"
         android:layout_width="60dp"
         android:layout_height="48dp"
         android:layout_x="314dp"
         android:layout_y="113dp"
-        android:text="Year"
+        android:text="All Time"
         android:textSize="8sp"
         tools:layout_editor_absoluteX="343dp"
         tools:layout_editor_absoluteY="98dp" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_x="201dp"
@@ -80,12 +80,12 @@
         tools:layout_editor_absoluteY="174dp" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/exper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_x="203dp"
         android:layout_y="219dp"
-        android:text="Average per Week:"
+        android:text="Exercises/Workout:"
         tools:layout_editor_absoluteX="233dp"
         tools:layout_editor_absoluteY="206dp"
         tools:text="Average per Week:" />

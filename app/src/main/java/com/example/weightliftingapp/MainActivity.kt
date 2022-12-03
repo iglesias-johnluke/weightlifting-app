@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //setFragments()
+        setFragments()
 
         // Initialize Firebase Auth
         auth = Firebase.auth
@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
             //sharedViewModel.databaseManager.demo()
             sharedViewModel.databaseManager.setDataListener()
 
-            setFragments()
+            //setFragments()
             Log.d(FIREBASE, "SIGNED IN")
 
         } else {
