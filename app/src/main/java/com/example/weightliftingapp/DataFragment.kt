@@ -100,9 +100,16 @@ class DataFragment : Fragment() {
     override fun onResume(){
 
             super.onResume()
+            clearPieChartAndStatTabs()
             showPieChartAndEnableStatTabs()
 
 
+    }
+
+    fun clearPieChartAndStatTabs(){
+        pieChart.clear()
+        total.text = ""
+        exper.text = ""
     }
 
     fun showPieChartAndEnableStatTabs(){

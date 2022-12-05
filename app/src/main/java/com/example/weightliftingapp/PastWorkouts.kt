@@ -38,8 +38,13 @@ class PastWorkouts : Fragment() {
         if(sharedViewModel.isdbInit() == false){
             sharedViewModel.setDatabaseManager()
         }
+        clearPastWorkoutRecyclerView()
         sharedViewModel.databaseManager.getUserData(::organizeWorkouts)
 
+    }
+
+    fun clearPastWorkoutRecyclerView(){
+        recyclerView.adapter = null
     }
 
     private fun organizeWorkouts(data: HashMap<String, Any>) {
