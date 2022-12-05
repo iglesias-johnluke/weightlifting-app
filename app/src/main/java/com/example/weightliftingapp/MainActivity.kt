@@ -169,6 +169,7 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                     activeFragment = dataFragment
                     binding.appBarLayoutText.text = getString(R.string.data_icon)
+                    dataFragment.showPieChartAndEnableStatTabs()
                 }
                 R.id.log_page -> {
                     fragmentManager.beginTransaction().hide(activeFragment).show(logFragment)

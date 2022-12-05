@@ -96,14 +96,21 @@ class DataFragment : Fragment() {
         return binding.root
     }
 
+
     override fun onResume(){
 
             super.onResume()
+            showPieChartAndEnableStatTabs()
 
+
+    }
+
+    fun showPieChartAndEnableStatTabs(){
         if (sharedViewModel.isdbInit() == false) {
             sharedViewModel.setDatabaseManager()
 
         }
+        Log.d("dataFrag", "isVisible")
         //Log.i("list",ExpandableListData.data["CHEST"].toString())
         sharedViewModel.databaseManager.getUserData(::fillBar, ::fillPie)
 
@@ -116,8 +123,9 @@ class DataFragment : Fragment() {
         allT.setOnClickListener {
             sharedViewModel.databaseManager.getUserData(::allClick)
         }
-
     }
+
+
 
     fun monthClick(data: HashMap<String,Any>){
 

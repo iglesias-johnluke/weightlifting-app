@@ -59,13 +59,18 @@ class DatabaseManager(userID: String) {
      * */
     fun getUserData(vararg functionReferences: (data: HashMap<String, Any>) -> Unit ){
         database.child(userID).get().addOnSuccessListener {
-            val data : HashMap<String, Any> = it.value as HashMap<String, Any>
-            for(f in functionReferences){
-                f(data)
+            if(it.value != null){
+                val data : HashMap<String, Any> = it.value as HashMap<String, Any>
+                for(f in functionReferences){
+                    f(data)
+                }
+                Log.d("getUserData", "Got value ${it.value}")
+            }else{
+                Log.d("getUserData", "it.value is null")
             }
-            Log.i("getUserData", "Got value ${it.value}")
+
         }.addOnFailureListener{
-            Log.e("getUserData", "Error getting data", it)
+            Log.d("getUserData", "Error getting data", it)
         }
     }
 
