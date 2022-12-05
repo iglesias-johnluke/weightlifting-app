@@ -16,18 +16,17 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 
 import com.google.firebase.auth.FirebaseAuth
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ExpandableListAdapter
-import android.widget.ExpandableListView
+import android.widget.*
 import androidx.viewpager.widget.ViewPager
 import com.example.weightliftingapp.ExpandableListData.data
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import org.w3c.dom.Text
 
 
 class MainActivity : AppCompatActivity() {
@@ -183,39 +182,48 @@ class MainActivity : AppCompatActivity() {
                     var logWorkout = findViewById<Button>(R.id.logWorkout)
 
                     addExercise.setOnClickListener {
-                        val date = findViewById<View>(R.id.logWorkoutDate) as EditText
-                        val workoutDate = date.text.toString()
+                        if(exerciseFormIsValid()){
+                            val date = findViewById<View>(R.id.logWorkoutDate) as EditText
+                            val workoutDate = date.text.toString()
 
-                        val type = findViewById<View>(R.id.logWorkoutType) as EditText
-                        val workoutType = type.text.toString()
+                            val type = findViewById<View>(R.id.logWorkoutType) as EditText
+                            val workoutType = type.text.toString()
 
-                        val name = findViewById<View>(R.id.logExerciseName) as EditText
-                        val exerciseName = name.text.toString()
+                            val name = findViewById<View>(R.id.logExerciseName) as EditText
+                            val exerciseName = name.text.toString()
 
-                        val sets = findViewById<View>(R.id.logExerciseSets) as EditText
-                        val exerciseSets = sets.text.toString().toInt()
+                            val sets = findViewById<View>(R.id.logExerciseSets) as EditText
+                            val exerciseSets = sets.text.toString()?.toInt()
 
-                        val reps = findViewById<View>(R.id.logExerciseReps) as EditText
-                        val exerciseReps = reps.text.toString().toInt()
+                            val reps = findViewById<View>(R.id.logExerciseReps) as EditText
+                            val exerciseReps = reps.text.toString()?.toInt()
 
-                        val weight = findViewById<View>(R.id.logExerciseWeight) as EditText
-                        val exerciseWeight = weight.text.toString().toInt()
+                            val weight = findViewById<View>(R.id.logExerciseWeight) as EditText
+                            val exerciseWeight = weight.text.toString()?.toInt()
 
 
-                        val exercise = DatabaseManager.Exercise(
-                            name = exerciseName, muscleGroup = workoutType,
-                            reps = exerciseReps, weight = exerciseWeight,
-                            sets = exerciseSets
-                        )
+                            val exercise = DatabaseManager.Exercise(
+                                name = exerciseName, muscleGroup = workoutType,
+                                reps = exerciseReps, weight = exerciseWeight,
+                                sets = exerciseSets
+                            )
 
-                        Snackbar.make(binding.root, "$exerciseName added to $workoutType workout", Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(binding.root, "$exerciseName added to $workoutType workout", Snackbar.LENGTH_SHORT).show()
 
-                        exerciseMap[exerciseName] = exercise
+                            exerciseMap[exerciseName] = exercise
 
-                        findViewById<EditText>(R.id.logExerciseName).text.clear()
-                        findViewById<EditText>(R.id.logExerciseSets).text.clear()
-                        findViewById<EditText>(R.id.logExerciseReps).text.clear()
-                        findViewById<EditText>(R.id.logExerciseWeight).text.clear()
+                            findViewById<EditText>(R.id.logExerciseName).text.clear()
+                            findViewById<EditText>(R.id.logExerciseSets).text.clear()
+                            findViewById<EditText>(R.id.logExerciseReps).text.clear()
+                            findViewById<EditText>(R.id.logExerciseWeight).text.clear()
+
+                        }else{
+                            Toast.makeText(this, "Please fill all exercise fields", Toast.LENGTH_LONG).show()
+
+                        }
+
+
+
                     }
 
                     logWorkout.setOnClickListener {
@@ -229,12 +237,20 @@ class MainActivity : AppCompatActivity() {
                         val workoutData =
                             DatabaseManager.Workout(name = "$workoutType workout", date = workoutDate)
 
-
-                        workoutData.exercises = exerciseMap
-                        if(::sharedViewModel.isInitialized == false){
-                            sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+                        if( exerciseMap.isNotEmpty() && workoutNameAndTypeIsValid()){
+                            workoutData.exercises = exerciseMap
+                            if(::sharedViewModel.isInitialized == false){
+                                sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+                            }
+                            sharedViewModel.databaseManager.addWorkout(workoutData)
+                            findViewById<TextInputEditText>(R.id.logWorkoutDate).text?.clear()
+                            findViewById<TextInputEditText>(R.id.logWorkoutType).text?.clear()
+                            exerciseMap.clear()
+                        }else{
+                            Toast.makeText(this, "Please enter workout date & type and add an exercise", Toast.LENGTH_LONG).show()
                         }
-                        sharedViewModel.databaseManager.addWorkout(workoutData)
+
+
                     }
                 }
                 R.id.browse_page -> {
@@ -292,6 +308,47 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    fun workoutNameAndTypeIsValid() : Boolean {
+        val date = findViewById<View>(R.id.logWorkoutDate) as EditText
+        val workoutDate = date.text.toString()
+
+        val type = findViewById<View>(R.id.logWorkoutType) as EditText
+        val workoutType = type.text.toString()
+
+        if(workoutDate.isEmpty() || workoutType.isEmpty()){
+            return false
+        }
+        return true
+    }
+
+    fun exerciseFormIsValid() : Boolean{
+        try{
+
+            val name = findViewById<View>(R.id.logExerciseName) as EditText
+            val exerciseName = name.text.toString()
+
+            val sets = findViewById<View>(R.id.logExerciseSets) as EditText
+            val exerciseSets = sets.text.toString().toInt()
+
+            val reps = findViewById<View>(R.id.logExerciseReps) as EditText
+            val exerciseReps = reps.text.toString().toInt()
+
+            val weight = findViewById<View>(R.id.logExerciseWeight) as EditText
+            val exerciseWeight = weight.text.toString().toInt()
+
+            if(exerciseName.isEmpty()){
+                return false
+            }
+            return true
+        }catch (e : java.lang.NumberFormatException){
+            return false
+        }
+
+
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
